@@ -2,13 +2,14 @@
 
 class CartaPokemon
 {
-    private $numeroPokedex;
-    private $nome;
+    private int $numeroPokedex;
+    private string $nome;
     private $tipo;
     private $raridade;
 
     public function __toString()
     {
+    	//"sprintf" é uma função usada para formatar strings de maneira dinâmica e flexível
         return sprintf(
             "Número Pokédex: %s | Nome: %s | Tipo: %s | Raridade: %s.\n",
             $this->numeroPokedex,
@@ -40,30 +41,29 @@ class CartaPokemon
         return $this;
     }
 
-    public function getNumeroPokedex()
+    public function getNumeroPokedex(): int
     {
         return $this->numeroPokedex;
     }
 
-    public function setNumeroPokedex($numeroPokedex): self
+    public function setNumeroPokedex(int $numeroPokedex): self
     {
         $this->numeroPokedex = $numeroPokedex;
         return $this;
     }
 
-    public function getNome()
+    public function getNome(): string
     {
         return $this->nome;
     }
 
-    public function setNome($nome): self
+    public function setNome(string $nome): self
     {
         $this->nome = $nome;
         return $this;
     }
 }
 
-// Criando cartas Pokémon com os Pokémon que você escolheu
 $pikachu = new CartaPokemon();
 $pikachu->setNumeroPokedex(25)->setNome("Pikachu")->setTipo("Elétrico")->setRaridade("Comum");
 
@@ -89,25 +89,40 @@ $cartas = [$pikachu, $sceptile, $mewtwo, $caterpie, $gengar, $blaziken, $ditto];
 
 $cartaSorteada = $cartas[array_rand($cartas)];
 
-echo "BEM VINDO AO JOGO DAS CARTAS POKÉMON!!!!\n\n";
-echo "Cartas disponíveis:\n";
+echo "Bem vindo ao jogo das cartas de pokémon!!\n\n";
+echo "As cartas disponíveis são:\n";
 
 foreach ($cartas as $carta) {
     echo $carta;
 }
 
 $tentativas = 0;
+$pontuacao = 80; //pontos iniciais
 
 do {
-    $palpite = readline("\nDigite algum número da Pokédex para tentar acertar a carta sorteada: ");
+    $palpite = readline("\nDigite algum número da Pokédex para tentar acertar a carta sorteada ou digite 'sair' para desistir: ");
+    
+    //opção de desistir
+    //"strtolower" serve para converter uma string em letras minusculas, por ex. se o usuario digitar "SAIR" ou "sAir" ele transforma em "sair" antes de comparar
+    if (strtolower($palpite) === "sair") {
+        echo "\nAh que pena, você desistiu do jogo...\n";
+        echo "A carta sorteada era: " . $cartaSorteada;
+        break;
+    }
+    
     $tentativas++;
 
     if ((int)$palpite === $cartaSorteada->getNumeroPokedex()) {
         echo "\nVocê acertou!\n";
         echo "Carta sorteada: " . $cartaSorteada;
         echo "Tentativas: $tentativas\n";
+        echo "Pontuação final: $pontuacao pontos\n";
         break;
     } else {
-        echo "Tente novamente.\n";
+        echo "Não é essa, tente novamente.\n";
+        $pontuacao -= 10; //perde 10pts a cada erro
+        if ($pontuacao < 0) {
+            $pontuacao = 0;
+        }
     }
 } while (true);
